@@ -1,0 +1,53 @@
+# ChatBI 数据分析助手 —— 直接依赖
+#
+# 版本号取自本项目实际运行通过的环境（D:\shenlan\envs\chatbi），
+# 均为该环境中的真实版本，用于复现。
+#
+# 相对旧版的修正：
+#   1. 删掉了标准库条目：typing / asyncio / pathlib / uuid（写在这里会让人以为要装）。
+#   2. 删掉了 uv —— 它是包管理器 CLI，不是本项目的 import 依赖。
+#   3. dotenv -> python-dotenv（PyPI 上的包名是 python-dotenv，`pip install dotenv`
+#      装到的是另一个无关的包）。
+#   4. psycopg2 -> psycopg2-binary。实际环境里只装了 binary 版；
+#      `pip install psycopg2` 在 Windows 上要本地编译（需要 pg_config + 编译器），
+#      大概率直接失败。
+#   5. 删掉了 starlette / async_timeout —— 项目里从未直接 import
+#      （starlette 由 fastapi 带入，async_timeout 是 httpx 系的传递依赖）。
+#   6. 全部锁定 == 版本，避免 langgraph / langchain 这类高频 breaking change 的包
+#      在不同时间装出不同结果。
+#
+# 注意：SQLAlchemy 自 2.1 起，裸 `postgresql://` 默认走 psycopg3。
+# 本项目用的是 psycopg2-binary，代码里已统一显式写 `postgresql+psycopg2://`。
+
+# --- LangChain / LangGraph 系 ---
+langchain==1.4.3
+langchain-core==1.6.6
+langchain-community==0.4.2
+langchain-openai==1.6.7
+langchain-mcp-adapters==0.3.2
+langgraph==1.2.12
+langsmith==0.14.4
+
+# --- MCP ---
+mcp==1.30.0
+
+# --- Web 服务 ---
+fastapi==0.142.2
+uvicorn==0.54.0
+pydantic==2.13.5
+
+# --- 数据库 ---
+SQLAlchemy==2.1.3
+psycopg2-binary==2.9.13
+
+# --- 数据分析 / 绘图 ---
+pandas==3.0.6
+numpy==2.5.3
+scipy==1.18.1
+matplotlib==3.11.2
+
+# --- 大模型调用 / 杂项 ---
+openai==3.24.0
+python-dotenv==1.2.4
+requests==2.34.2
+typing_extensions==4.16.0
